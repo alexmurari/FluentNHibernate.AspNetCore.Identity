@@ -18,6 +18,11 @@ public abstract class IdentityUserMapBase<TEntity, TKey> : ClassMap<TEntity> whe
 
     protected IdentityUserMapBase(string tableName, Action<IdentityPart> configureIdMap)
     {
+        if (configureIdMap == null)
+        {
+            throw new ArgumentNullException(nameof(configureIdMap));
+        }
+
         configureIdMap(Id(t => t.Id));
         Map(t => t.UserName).Unique().Not.Nullable().Length(64);
         Map(t => t.NormalizedUserName).Unique().Not.Nullable().Length(64);

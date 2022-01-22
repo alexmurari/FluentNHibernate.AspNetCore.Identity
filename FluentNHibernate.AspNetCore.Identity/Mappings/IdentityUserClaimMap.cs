@@ -3,7 +3,7 @@
 using System;
 using FluentNHibernate.Mapping;
 
-public sealed class IdentityUserClaimMap : IdentityUserClaimMapBase<IdentityUserClaim, long>
+public sealed class IdentityUserClaimMap : IdentityUserClaimMapBase<IdentityUserClaim<long>, long>
 {
     public IdentityUserClaimMap() : base(t => t.Not.Nullable())
     {
@@ -18,6 +18,11 @@ public abstract class IdentityUserClaimMapBase<TEntity, TKey> : ClassMap<TEntity
 
     protected IdentityUserClaimMapBase(string tableName, Action<PropertyPart> configureUserIdMap)
     {
+        if (configureUserIdMap == null)
+        {
+            throw new ArgumentNullException(nameof(configureUserIdMap));
+        }
+
         Id(t => t.Id).GeneratedBy.Identity();
         configureUserIdMap(Map(t => t.UserId));
         Map(t => t.ClaimType).Length(1024).Not.Nullable();

@@ -3,7 +3,7 @@
 using System;
 using FluentNHibernate.Mapping;
 
-public sealed class IdentityUserTokenMap : IdentityUserTokenMapBase<IdentityUserToken, long>
+public sealed class IdentityUserTokenMap : IdentityUserTokenMapBase<IdentityUserToken<long>, long>
 {
     public IdentityUserTokenMap() : base(t => t.KeyProperty(x => x.UserId))
     {
@@ -18,6 +18,11 @@ public abstract class IdentityUserTokenMapBase<TEntity, TKey> : ClassMap<TEntity
 
     protected IdentityUserTokenMapBase(string tableName, Func<CompositeIdentityPart<TEntity>, CompositeIdentityPart<TEntity>> configureCompositeId)
     {
+        if (configureCompositeId == null)
+        {
+            throw new ArgumentNullException(nameof(configureCompositeId));
+        }
+
         configureCompositeId(CompositeId()
             .KeyProperty(t => t.LoginProvider, t => t.Length(32))
             .KeyProperty(t => t.Name, t => t.Length(32)));

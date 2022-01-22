@@ -3,7 +3,7 @@
 using System;
 using FluentNHibernate.Mapping;
 
-public sealed class IdentityRoleClaimMap : IdentityRoleClaimMapBase<IdentityRoleClaim, long>
+public sealed class IdentityRoleClaimMap : IdentityRoleClaimMapBase<IdentityRoleClaim<long>, long>
 {
     public IdentityRoleClaimMap() : base(t => t.GeneratedBy.Identity(), t => t.Not.Nullable())
     {
@@ -18,6 +18,16 @@ public abstract class IdentityRoleClaimMapBase<TEntity, TKey> : ClassMap<TEntity
 
     protected IdentityRoleClaimMapBase(string tableName, Action<IdentityPart> configureIdMap, Action<PropertyPart> configureRoleIdMap)
     {
+        if (configureIdMap == null)
+        {
+            throw new ArgumentNullException(nameof(configureIdMap));
+        }
+
+        if (configureRoleIdMap == null)
+        {
+            throw new ArgumentNullException(nameof(configureRoleIdMap));
+        }
+
         configureIdMap(Id(t => t.Id));
         configureRoleIdMap(Map(t => t.RoleId));
         Map(t => t.ClaimType).Length(1024).Not.Nullable();

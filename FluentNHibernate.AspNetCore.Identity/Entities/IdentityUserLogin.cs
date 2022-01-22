@@ -2,10 +2,6 @@ namespace FluentNHibernate.AspNetCore.Identity;
 
 using System;
 
-public class IdentityUserLogin : IdentityUserLogin<long>
-{
-}
-
 public class IdentityUserLogin<TKey> : Microsoft.AspNetCore.Identity.IdentityUserLogin<TKey> where TKey : IEquatable<TKey>
 {
     protected bool Equals(IdentityUserLogin<TKey> other) {

@@ -18,6 +18,11 @@ public abstract class IdentityRoleMapBase<TEntity, TKey> : ClassMap<TEntity> whe
 
     protected IdentityRoleMapBase(string tableName, Action<IdentityPart> configureIdMap)
     {
+        if (configureIdMap == null)
+        {
+            throw new ArgumentNullException(nameof(configureIdMap));
+        }
+
         configureIdMap(Id(t => t.Id));
         Map(t => t.Name).Length(64).Not.Nullable().Unique();
         Map(t => t.NormalizedName).Length(64).Not.Nullable().Unique();

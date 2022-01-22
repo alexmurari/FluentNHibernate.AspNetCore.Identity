@@ -3,10 +3,6 @@ namespace FluentNHibernate.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 
-public class IdentityUserToken : IdentityUserToken<long>
-{
-}
-
 public class IdentityUserToken<TKey> : Microsoft.AspNetCore.Identity.IdentityUserToken<TKey> where TKey : IEquatable<TKey>
 {
     protected bool Equals(IdentityUserToken<TKey> other) {
