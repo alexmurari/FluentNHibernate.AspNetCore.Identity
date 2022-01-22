@@ -8,7 +8,7 @@
 
 > PM> Install-Package FluentNHibernate.AspNetCore.Identity
 
-### Add the default entity mapping (**only when not using custom entities**)
+### Add the default entity mappings (only when not using custom entities)
 ```csharp
 using FluentNHibernate.AspNetCore.Identity;
 
@@ -29,7 +29,7 @@ using FluentNHibernate.AspNetCore.Identity;
 services.AddScoped(t => SessionFactory.OpenSession()) // ISession required for resolving store services.
 
 services.AddIdentityCore<IdentityUser>()
-    .AddRoles<IdentityRole>()
+    .AddRoles<IdentityRole>() // Optional
     .AddNHibernateStores(t => t.SetAutoFlushSession(false));
 ```
 
@@ -68,17 +68,12 @@ Fluently.Configure()
     .Database(persistenceConfigurer)
     .Mappings(t =>
     {
-        // When all identity entities are customized
-        t.FluentMappings.AddFromAssembly(/* Your custom mappings assembly */));
-
-        // OR
-
-        // When only some identy entities are customized
+        // Add your custom mappings.
         t.FluentMappings.AddFromAssembly(/* Your custom mappings assembly */))
         // Manually add the default mappings for non-customized entities
         .Add<IdentityRoleClaimMap>()
         .Add<IdentityUserLoginMap>()
-        .Add</* other default entities... */>()
+        // ...
     }) 
 ```
 
@@ -98,7 +93,90 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetAutoFlushSession(true));
 ```
 
-## 3. Usage
+### NOTES
+
+i. The identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
+are automatically registered and the ```TKey``` generic argument representing the entity's primary key is inferred from the registered 
+```IdentityUser<TKey>``` type  (through the ```AddIdentityCore<IdentityUser<TKey>>()``` method).
+A registered ```IdentityUser<long>``` will automatically cause a ```IdentityUserToken<long>``` to be registered, when this
+specific entity registration is omitted.
+
+## 3. Extra options
+
+### i. Overriding schema/table names
+
+#### a. Override the default schema or table names by constructor parameter.
+
+```csharp
+using FluentNHibernate.AspNetCore.Identity;
+
+public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
+{
+    public ApplicationUserMap() : base("MyTableName", t => t.GeneratedBy.TriggerIdentity().Length(32))
+    {
+        // Custom property maps...
+    }
+}
+
+// OR
+
+public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
+{
+    public ApplicationUserMap() : base("MySchemaName", "MyTableName", t => t.GeneratedBy.TriggerIdentity().Length(32))
+    {
+        // Custom property maps...
+    }
+}
+```
+
+#### b. Override the default schema or table names by calling configuration methods from the base map class.
+
+```csharp
+using FluentNHibernate.AspNetCore.Identity;
+
+public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
+{
+    public ApplicationUserMap() : base(t => t.GeneratedBy.TriggerIdentity().Length(32))
+    {
+        Schema("MySchemaName");
+        Table("MyTableName");
+    }
+}
+
+```
+
+#### NOTE: The default schema name is ```dbo``` (SQL Server default).
+
+### ii. Controlling session auto flush in store services
+
+By default, after calling create, update or delete methods in the identity stores, the NHibernate session is automatically flushed.
+
+There is a configuration available to control whether or not the session should be flushed after these oprations.
+
+```csharp
+services.AddIdentityCore<ApplicationUser>()
+    // ...
+    .AddNHibernateStores(t => t.SetAutoFlushSession(true));
+```
+
+### iii. Adding custom identity entities through extended configuration
+
+Custom identity entities (apart from ``` IdentityUser<TKey> ``` and ``` IdentityRole<TKey> ```) can be defined during store service registration
+through the ```ExtendConfiguration``` method.
+
+```csharp
+services.AddIdentityCore<ApplicationUser>()
+    .AddRoles<ApplicationRoles>()
+    // -----------------------------------
+    .ExtendConfiguration()
+    .AddUserClaim<ApplicationUserClaim>()
+    .AddUserToken<ApplicationUserToken>()
+    // Other custom entities...
+    // -----------------------------------
+    .AddNHibernateStores(t => t.SetAutoFlushSession(true));
+```
+
+## 4. Usage  example
 
 ```csharp
 using FluentNHibernate.AspNetCore.Identity;
@@ -108,7 +186,7 @@ public class RegistrationController
 {
     private readonly IUserStore<IdentityUser> _userStore; // Or your custom IdentityUser type that derives from IdentityUser<TKey>
 
-    public RegistrationController(IUserStore<ApplicationUser> userStore)
+    public RegistrationController(IUserStore<IdentityUser> userStore)
     {
         _userStore = userStore;
     }
