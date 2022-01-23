@@ -194,3 +194,7 @@ public class RegistrationController
     // ...
 }
 ```
+
+## 5. License
+
+[MIT License (MIT)](./license.txt)
