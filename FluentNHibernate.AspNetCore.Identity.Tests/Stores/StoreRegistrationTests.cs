@@ -1,6 +1,5 @@
 ﻿namespace FluentNHibernate.AspNetCore.Identity.Tests;
 
-using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
