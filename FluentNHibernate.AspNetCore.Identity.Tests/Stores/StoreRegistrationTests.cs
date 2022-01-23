@@ -1,5 +1,6 @@
 ﻿namespace FluentNHibernate.AspNetCore.Identity.Tests;
 
+using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
@@ -45,9 +46,10 @@ public class StoreRegistrationTests
     }
 
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Assert_simple_store_registration_with_store_options_is_successful(bool autoFlushSession)
+    [InlineData(true, GuidFormat.Digits)]
+    [InlineData(false, GuidFormat.Parentheses)]
+    [InlineData(null, null)]
+    public void Assert_simple_store_registration_with_store_options_is_successful(bool? autoFlushSession, GuidFormat? guidFormat)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
@@ -56,14 +58,23 @@ public class StoreRegistrationTests
         // Act
         serviceCollection.AddIdentityCore<ApplicationUser>()
             .AddRoles<ApplicationRole>()
-            .AddNHibernateStores(t => t.SetAutoFlushSession(autoFlushSession));
+            .AddNHibernateStores(t =>
+            {
+                if (autoFlushSession.HasValue)
+                    t.SetAutoFlushSession(autoFlushSession.Value);
+
+                if (guidFormat.HasValue)
+                    t.SetGuidFormat(guidFormat.Value);
+
+                return t;
+            });
 
         // Assert
         using var serviceProvider = serviceCollection.BuildServiceProvider();
         Assert.NotNull(serviceProvider.GetService<IUserStore<ApplicationUser>>());
         Assert.NotNull(serviceProvider.GetService<IRoleStore<ApplicationRole>>());
-        Assert.Equal(autoFlushSession, ((UserStore<ApplicationUser, ApplicationRole, string>)serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>()).AutoFlushSession);
-        Assert.Equal(autoFlushSession, ((RoleStore<ApplicationRole, string>)serviceProvider.GetRequiredService<IRoleStore<ApplicationRole>>()).AutoFlushSession);
+        Assert.Equal(autoFlushSession ?? true, ((UserStore<ApplicationUser, ApplicationRole, string>)serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>()).AutoFlushSession);
+        Assert.Equal(guidFormat ?? GuidFormat.Hyphens, ((RoleStore<ApplicationRole, string>)serviceProvider.GetRequiredService<IRoleStore<ApplicationRole>>()).GuidFormat);
     }
 
     [Fact]
@@ -151,9 +162,10 @@ public class StoreRegistrationTests
     }
 
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Assert_extended_store_registration_with_store_options_is_successful(bool autoFlushSession)
+    [InlineData(true, GuidFormat.Braces)]
+    [InlineData(false, GuidFormat.Hyphens)]
+    [InlineData(null, null)]
+    public void Assert_extended_store_registration_with_store_options_is_successful(bool? autoFlushSession, GuidFormat? guidFormat)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
@@ -164,13 +176,24 @@ public class StoreRegistrationTests
             .ExtendConfiguration()
             .AddUserClaim<ApplicationUserClaim>()
             .AddUserToken<ApplicationUserToken>()
-            .AddNHibernateStores(t => t.SetAutoFlushSession(autoFlushSession));
+            .AddNHibernateStores(t =>
+            {
+                if (autoFlushSession.HasValue)
+                    t.SetAutoFlushSession(autoFlushSession.Value);
+
+                if (guidFormat.HasValue)
+                    t.SetGuidFormat(guidFormat.Value);
+
+                return t;
+            });
 
         // Assert
         using var serviceProvider = serviceCollection.BuildServiceProvider();
         Assert.NotNull(serviceProvider.GetService<IUserStore<ApplicationUser>>());
         Assert.Null(serviceProvider.GetService<IRoleStore<ApplicationRole>>());
-        Assert.Equal(autoFlushSession, ((UserOnlyStore<ApplicationUser, string, ApplicationUserClaim, Identity.IdentityUserLogin<string>, ApplicationUserToken>)serviceProvider
-            .GetRequiredService<IUserStore<ApplicationUser>>()).AutoFlushSession);
+        Assert.Equal(autoFlushSession ?? true, ((UserOnlyStore<ApplicationUser, string, ApplicationUserClaim, Identity.IdentityUserLogin<string>, ApplicationUserToken>)
+            serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>()).AutoFlushSession);
+        Assert.Equal(guidFormat ?? GuidFormat.Hyphens, ((UserOnlyStore<ApplicationUser, string, ApplicationUserClaim, Identity.IdentityUserLogin<string>, ApplicationUserToken>)
+            serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>()).GuidFormat);
     }
 }

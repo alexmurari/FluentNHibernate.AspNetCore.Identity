@@ -31,12 +31,15 @@ public class RoleStore<TRole, TKey, TUserRole, TRoleClaim> : RoleStoreBase<TRole
 
     public bool AutoFlushSession { get; set; }
 
+    public GuidFormat GuidFormat { get; set; }
+
     public override IQueryable<TRole> Roles => _session.Query<TRole>();
 
     public RoleStore(ISession session, NHibernateStoreOptions? storeOptions = null, IdentityErrorDescriber? describer = null) : base(describer ?? new IdentityErrorDescriber())
     {
         _session = session ?? throw new ArgumentNullException(nameof(session));
         AutoFlushSession = storeOptions?.AutoFlushSession ?? true;
+        GuidFormat = storeOptions?.GuidFormat ?? GuidFormat.Hyphens;
     }
 
     public override async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken = default)
@@ -74,11 +77,11 @@ public class RoleStore<TRole, TKey, TUserRole, TRoleClaim> : RoleStoreBase<TRole
             return IdentityResult.Failed(new IdentityError
             {
                 Code = "RoleNotExist",
-                Description = $"Role with {role.Id} does not exists."
+                Description = $"Role with {role.Id} does not exist."
             });
         }
 
-        role.ConcurrencyStamp = Guid.NewGuid().ToString();
+        role.ConcurrencyStamp = Guid.NewGuid().ToString(new string((char)GuidFormat, 1));
 
         await _session.MergeAsync(role, cancellationToken);
         await FlushSessionAsync(cancellationToken);

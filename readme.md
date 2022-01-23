@@ -98,7 +98,7 @@ services.AddIdentityCore<ApplicationUser>()
 i. The identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
 are automatically registered and the ```TKey``` generic argument representing the entity's primary key is inferred from the registered 
 ```IdentityUser<TKey>``` type  (through the ```AddIdentityCore<IdentityUser<TKey>>()``` method).
-A registered ```IdentityUser<long>``` will automatically cause a ```IdentityUserToken<long>``` to be registered, when this
+E.g. registered ```IdentityUser<long>``` will automatically cause a default ```IdentityUserToken<long>``` to be registered, when this
 specific entity registration is omitted.
 
 ## 3. Extra options
@@ -145,21 +145,36 @@ public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
 
 ```
 
-#### NOTE: The default schema name is ```dbo``` (SQL Server default).
+#### Default schema name: ```"dbo"``` (SQL Server default)
 
 ### ii. Controlling session auto flush in store services
 
 By default, after calling create, update or delete methods in the identity stores, the NHibernate session is automatically flushed.
 
-There is a configuration available to control whether or not the session should be flushed after these oprations.
+The auto flush behavior can be controlled through the ```SetAutoFlushSession(bool)``` method.
 
 ```csharp
 services.AddIdentityCore<ApplicationUser>()
     // ...
-    .AddNHibernateStores(t => t.SetAutoFlushSession(true));
+    .AddNHibernateStores(t => t.SetAutoFlushSession(false));
 ```
 
-### iii. Adding custom identity entities through extended configuration
+#### Default: ```true```
+
+### iii. Controlling store GUID format
+
+The identity store automatically generate GUIDs for determined string properties (e.g. ```ConcurrencyStamp```).
+The format of the GUID's string representaion can be defined through the ```SetGuidFormat(guidFormat)``` method.
+
+```csharp
+services.AddIdentityCore<ApplicationUser>()
+    // ...
+    .AddNHibernateStores(t => t.SetGuidFormat(GuidFormat.Digits));
+```
+
+#### Default: ```GuidFormart.Hyphens``` (```"D"```)
+
+### iv. Adding custom identity entities through extended configuration
 
 Custom identity entities (apart from ``` IdentityUser<TKey> ``` and ``` IdentityRole<TKey> ```) can be defined during store service registration
 through the ```ExtendConfiguration``` method.

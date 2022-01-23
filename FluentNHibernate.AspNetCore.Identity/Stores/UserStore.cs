@@ -42,10 +42,13 @@ public class UserStore<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TU
 
     public bool AutoFlushSession { get; set; }
 
+    public GuidFormat GuidFormat { get; set; }
+
     public UserStore(ISession session, NHibernateStoreOptions? storeOptions = null, IdentityErrorDescriber? describer = null) : base(describer ?? new IdentityErrorDescriber())
     {
         _session = session;
         AutoFlushSession = storeOptions?.AutoFlushSession ?? true;
+        GuidFormat = storeOptions?.GuidFormat ?? GuidFormat.Hyphens;
     }
 
     public override async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken = new CancellationToken())
@@ -84,12 +87,12 @@ public class UserStore<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TU
                 new IdentityError
                 {
                     Code = "UserNotExist",
-                    Description = $"User with id {user.Id} does not exists!"
+                    Description = $"User with id {user.Id} does not exist!"
                 }
             );
         }
 
-        user.ConcurrencyStamp = Guid.NewGuid().ToString();
+        user.ConcurrencyStamp = Guid.NewGuid().ToString(new string((char)GuidFormat, 1));
 
         await _session.MergeAsync(user, cancellationToken);
         await FlushSessionAsync(cancellationToken);
