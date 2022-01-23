@@ -164,7 +164,7 @@ services.AddIdentityCore<ApplicationUser>()
 ### iii. Controlling store GUID format
 
 The identity store automatically generate GUIDs for determined string properties (e.g. ```ConcurrencyStamp```).
-The format of the GUID's string representaion can be defined through the ```SetGuidFormat(guidFormat)``` method.
+The format of the GUID's string representation can be defined through the ```SetGuidFormat(guidFormat)``` method.
 
 ```csharp
 services.AddIdentityCore<ApplicationUser>()
