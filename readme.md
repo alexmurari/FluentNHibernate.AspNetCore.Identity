@@ -93,7 +93,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetAutoFlushSession(true));
 ```
 
-### NOTES
+**NOTES**
 
 i. The identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
 are automatically registered and the ```TKey``` generic argument representing the entity's primary key is inferred from the registered 
@@ -159,7 +159,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetAutoFlushSession(false));
 ```
 
-#### Default: ```true```
+**Default: ```true```**
 
 ### iii. Controlling store GUID format
 
