@@ -145,7 +145,7 @@ public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
 
 ```
 
-#### Default schema name: ```"dbo"``` (SQL Server default)
+**Default schema name: ```"dbo"``` (SQL Server default)**
 
 ### ii. Controlling session auto flush in store services
 
@@ -164,7 +164,7 @@ services.AddIdentityCore<ApplicationUser>()
 ### iii. Controlling store GUID format
 
 The identity store automatically generate GUIDs for determined string properties (e.g. ```ConcurrencyStamp```).
-The format of the GUID's string representation can be defined through the ```SetGuidFormat(guidFormat)``` method.
+The format of the GUID's string representation can be defined through the ```SetGuidFormat(GuidFormat)``` method.
 
 ```csharp
 services.AddIdentityCore<ApplicationUser>()
@@ -172,7 +172,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetGuidFormat(GuidFormat.Digits));
 ```
 
-#### Default: ```GuidFormat.Hyphens``` (```"D"```)
+**Default: ```GuidFormat.Hyphens``` (```"D"```)**
 
 ### iv. Adding custom identity entities through extended configuration
 
