@@ -16,6 +16,7 @@ Fluently.Configure()
     .Database(persistenceConfigurer)
     .Mappings(t =>
     {
+        // Only use this method when there are no custom identity entities.
         t.FluentMappings.AddIdentityMappings();
     }) 
     // ...
@@ -77,6 +78,10 @@ Fluently.Configure()
     }) 
 ```
 
+**NOTE:** **Do not** use the ```FluentMappings.AddIdentityMappings()``` method when there are custom identity entities defined.
+Mappings for default entities must be added **manually** since calling ```AddIdentityMappings()``` would add unnecessary mappings for base types
+of custom identity entities  that derive from those types.
+
 ### Register the NHibernate stores for custom entities
 
 ```csharp
@@ -93,11 +98,9 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetAutoFlushSession(true));
 ```
 
-**NOTES**
-
-i. The identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
-are automatically registered and the ```TKey``` generic argument representing the entity's primary key is inferred from the registered 
-```IdentityUser<TKey>``` type  (through the ```AddIdentityCore<IdentityUser<TKey>>()``` method).
+**NOTE:** Identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
+are automatically registered with the default type and the ```TKey``` generic argument representing the entity's primary key is inferred from the registered 
+```IdentityUser<TKey>``` type.
 E.g. registered ```IdentityUser<long>``` will automatically cause a default ```IdentityUserToken<long>``` to be registered, when this
 specific entity registration is omitted.
 
