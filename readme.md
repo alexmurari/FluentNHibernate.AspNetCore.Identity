@@ -172,7 +172,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddNHibernateStores(t => t.SetGuidFormat(GuidFormat.Digits));
 ```
 
-#### Default: ```GuidFormart.Hyphens``` (```"D"```)
+#### Default: ```GuidFormat.Hyphens``` (```"D"```)
 
 ### iv. Adding custom identity entities through extended configuration
 
