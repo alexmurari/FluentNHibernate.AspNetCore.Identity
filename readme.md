@@ -2,7 +2,9 @@
 
 **Highly customizable ASP.NET Core Identity provider for NHibernate with FluentNHibernate mapping support.**
 
-<img alt="Nuget (with prereleases)" src="https://img.shields.io/nuget/vpre/Fluent.NHibernate.AspNetCore.Identity">
+<a href="https://www.nuget.org/packages/Fluent.NHibernate.AspNetCore.Identity/absoluteLatest">
+    <img alt="Nuget (with prereleases)" src="https://img.shields.io/nuget/vpre/Fluent.NHibernate.AspNetCore.Identity">
+</a>
 
 ## 1. Getting started
 
