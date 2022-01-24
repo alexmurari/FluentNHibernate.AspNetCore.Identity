@@ -2,11 +2,13 @@
 
 **Highly customizable ASP.NET Core Identity provider for NHibernate with FluentNHibernate mapping support.**
 
+<img alt="Nuget (with prereleases)" src="https://img.shields.io/nuget/vpre/Fluent.NHibernate.AspNetCore.Identity">
+
 ## 1. Getting started
 
 ### Install the package
 
-> PM> Install-Package FluentNHibernate.AspNetCore.Identity
+> PM> Install-Package Fluent.NHibernate.AspNetCore.Identity
 
 ### Add the default entity mappings (only when not using custom entities)
 ```csharp
