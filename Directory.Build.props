@@ -2,9 +2,8 @@
 	<PropertyGroup>
 		<VersionPrefix>1.0.0</VersionPrefix>
 		<VersionSuffix>alpha.1</VersionSuffix>
-		<PackageId>Fluent.NHibernate.AspNetCore.Identity</PackageId>
+		<Product>FluentNHibernate.AspNetCore.Identity</Product>
 		<Description>Highly customizable ASP.NET Core Identity provider for NHibernate with FluentNHibernate mapping support.</Description>
-		<Product>Fluent.NHibernate.AspNetCore.Identity</Product>
 		<Authors>Alexandre Murari Junior (alexmurari)</Authors>
 		<Company>Alexandre Murari Junior (alexmurari)</Company>
 		<_CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</_CurrentYear>
