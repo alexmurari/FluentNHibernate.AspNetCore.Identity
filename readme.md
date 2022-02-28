@@ -35,7 +35,7 @@ services.AddScoped(t => SessionFactory.OpenSession()) // ISession required for r
 
 services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>() // Optional
-    .AddNHibernateStores(t => t.SetAutoFlushSession(false));
+    .AddNHibernateStores(t => t.SetSessionAutoFlush(false));
 ```
 
 ## 2. Custom entities/mappings
@@ -99,7 +99,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddUserClaim<ApplicationUserClaim>()
     .AddUserToken<ApplicationUserToken>()
     // Other custom entities...
-    .AddNHibernateStores(t => t.SetAutoFlushSession(true));
+    .AddNHibernateStores(t => t.SetSessionAutoFlush(true));
 ```
 
 **NOTE:** Identity entities **omitted** during service registration (```IdentityUserClaim<Tkey>```, ```IdentityUserToken<TKey>```, etc.) 
@@ -158,12 +158,12 @@ public class ApplicationUserMap : IdentityUserMapBase<ApplicationUser, string>
 
 By default, after calling create, update or delete methods in the identity stores, the NHibernate session is automatically flushed.
 
-The auto flush behavior can be controlled through the ```SetAutoFlushSession(bool)``` method.
+The auto flush behavior can be controlled through the ```SetSessionAutoFlush(bool)``` method.
 
 ```csharp
 services.AddIdentityCore<ApplicationUser>()
     // ...
-    .AddNHibernateStores(t => t.SetAutoFlushSession(false));
+    .AddNHibernateStores(t => t.SetSessionAutoFlush(false));
 ```
 
 **Default: ```true```**
@@ -195,7 +195,7 @@ services.AddIdentityCore<ApplicationUser>()
     .AddUserToken<ApplicationUserToken>()
     // Other custom entities...
     // -----------------------------------
-    .AddNHibernateStores(t => t.SetAutoFlushSession(true));
+    .AddNHibernateStores(t => t.SetSessionAutoFlush(true));
 ```
 
 ## 4. Usage  example

@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class IdentityBuilderExtendedExtensions
 {
-    public static IdentityBuilderExtended AddNHibernateStores(this IdentityBuilderExtended identityBuilder, Func<NHibernateStoreOptions, NHibernateStoreOptions>? configureStoreOptions = null)
+    public static IdentityBuilderExtended AddNHibernateStores(this IdentityBuilderExtended identityBuilder, Action<NHibernateStoreOptions>? configureStoreOptions = null)
     {
         AddStores(identityBuilder, configureStoreOptions);
         return identityBuilder;
     }
 
-    private static void AddStores(IdentityBuilderExtended identityBuilder, Func<NHibernateStoreOptions, NHibernateStoreOptions>? configureStoreOptions)
+    private static void AddStores(IdentityBuilderExtended identityBuilder, Action<NHibernateStoreOptions>? configureStoreOptions)
     {
         var userType = identityBuilder.UserType;
         var roleType = identityBuilder.RoleType;
@@ -70,7 +70,9 @@ public static class IdentityBuilderExtendedExtensions
 
         if (configureStoreOptions != null)
         {
-            services.TryAddSingleton(configureStoreOptions(new NHibernateStoreOptions()));
+            var storeOptions = new NHibernateStoreOptions();
+            configureStoreOptions(storeOptions);
+            services.TryAddSingleton(storeOptions);
         }
     }
 

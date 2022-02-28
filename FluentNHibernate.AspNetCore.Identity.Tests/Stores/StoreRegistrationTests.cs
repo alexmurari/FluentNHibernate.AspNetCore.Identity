@@ -60,12 +60,10 @@ public class StoreRegistrationTests
             .AddNHibernateStores(t =>
             {
                 if (autoFlushSession.HasValue)
-                    t.SetAutoFlushSession(autoFlushSession.Value);
+                    t.SetSessionAutoFlush(autoFlushSession.Value);
 
                 if (guidFormat.HasValue)
                     t.SetGuidFormat(guidFormat.Value);
-
-                return t;
             });
 
         // Assert
@@ -178,12 +176,10 @@ public class StoreRegistrationTests
             .AddNHibernateStores(t =>
             {
                 if (autoFlushSession.HasValue)
-                    t.SetAutoFlushSession(autoFlushSession.Value);
+                    t.SetSessionAutoFlush(autoFlushSession.Value);
 
                 if (guidFormat.HasValue)
                     t.SetGuidFormat(guidFormat.Value);
-
-                return t;
             });
 
         // Assert

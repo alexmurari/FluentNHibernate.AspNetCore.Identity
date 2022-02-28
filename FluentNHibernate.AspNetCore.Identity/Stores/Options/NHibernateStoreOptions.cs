@@ -17,19 +17,19 @@ public class NHibernateStoreOptions
     }
 
     /// <summary>
-    ///     Gets a flag indicating if store changes should be persisted after CreateAsync, UpdateAsync and DeleteAsync are called.
+    ///     Gets a flag indicating if store changes should be persisted after <c>CreateAsync</c>, <c>UpdateAsync</c> and <c>DeleteAsync</c> are called.
     /// </summary>
     public bool? AutoFlushSession { get; private set; }
 
     /// <summary>
-    ///     Gets the GUID format specifier that the identity store uses when converting <see cref="Guid"/> instances to it's string representation.
+    ///     Gets the GUID format specifier used by the identity store when converting <see cref="Guid"/> instances to it's string representation.
     /// </summary>
     public GuidFormat? GuidFormat { get; private set; }
 
     /// <summary>
     ///     Sets a flag indicating if store changes should be persisted after CreateAsync, UpdateAsync and DeleteAsync are called.
     /// </summary>
-    public NHibernateStoreOptions SetAutoFlushSession(bool value = true)
+    public NHibernateStoreOptions SetSessionAutoFlush(bool value = true)
     {
         AutoFlushSession = value;
         return this;

@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class IdentityBuilderExtensions
 {
-    public static IdentityBuilder AddNHibernateStores(this IdentityBuilder identityBuilder, Func<NHibernateStoreOptions, NHibernateStoreOptions>? configureStoreOptions = null)
+    public static IdentityBuilder AddNHibernateStores(this IdentityBuilder identityBuilder, Action<NHibernateStoreOptions>? configureStoreOptions = null)
     {
         AddStores(identityBuilder.Services, identityBuilder.UserType, identityBuilder.RoleType, configureStoreOptions);
         return identityBuilder;
@@ -18,7 +18,7 @@ public static class IdentityBuilderExtensions
         return new IdentityBuilderExtended(identityBuilder.UserType, identityBuilder.RoleType, identityBuilder.Services);
     }
 
-    private static void AddStores(IServiceCollection services, Type userType, Type? roleType, Func<NHibernateStoreOptions, NHibernateStoreOptions>? configureStoreOptions)
+    private static void AddStores(IServiceCollection services, Type userType, Type? roleType, Action<NHibernateStoreOptions>? configureStoreOptions)
     {
         var identityUserType = FindGenericBaseType(userType, typeof(IdentityUser<>));
 
@@ -48,7 +48,9 @@ public static class IdentityBuilderExtensions
 
         if (configureStoreOptions != null)
         {
-            services.TryAddSingleton(configureStoreOptions(new NHibernateStoreOptions()));
+            var storeOptions = new NHibernateStoreOptions();
+            configureStoreOptions(storeOptions);
+            services.TryAddSingleton(storeOptions);
         }
     }
 

@@ -55,6 +55,8 @@ public class UserOnlyStore<TUser, TKey, TUserClaim, TUserLogin, TUserToken> : Us
             throw new ArgumentNullException(nameof(user));
         }
 
+        user.ConcurrencyStamp = Guid.NewGuid().ToString(new string((char)GuidFormat, 1));
+
         await _session.SaveAsync(user, cancellationToken);
         await FlushSessionAsync(cancellationToken);
 
